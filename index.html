@@ -252,228 +252,231 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
-  <script>
-    // ---------- Theme handling ----------
-    const root = document.documentElement;
-    const themeBtn = document.getElementById('toggleTheme');
-    function getSavedTheme(){
-      return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    }
-    function applyTheme(theme){
-      root.setAttribute('data-theme', theme);
-      themeBtn.setAttribute('aria-pressed', theme==='light');
-      themeBtn.textContent = theme==='light' ? '☀️ Light' : '🌙 Dark';
-      // Update chart palettes if charts exist
-      if(window.mixChart) updateChartPalettes();
-    }
-    themeBtn.addEventListener('click', ()=>{
-      const next = root.getAttribute('data-theme')==='light' ? 'dark' : 'light';
-      localStorage.setItem('theme', next);
-      applyTheme(next);
+<script>
+  /* ------------------------------------------
+   * 1) Declare chart refs at the very top
+   * ------------------------------------------ */
+  let mixChart, roiChart, runwayChart;
+
+  /* ---------- Theme handling ---------- */
+  const root = document.documentElement;
+  const themeBtn = document.getElementById('toggleTheme');
+
+  function getSavedTheme(){
+    return localStorage.getItem('theme') ||
+           (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  }
+  function applyTheme(theme){
+    root.setAttribute('data-theme', theme);
+    themeBtn.setAttribute('aria-pressed', theme==='light');
+    themeBtn.textContent = theme==='light' ? '☀️ Light' : '🌙 Dark';
+    // IMPORTANT: do NOT touch charts here; they might not exist yet.
+  }
+  themeBtn.addEventListener('click', ()=>{
+    const next = root.getAttribute('data-theme')==='light' ? 'dark' : 'light';
+    localStorage.setItem('theme', next);
+    applyTheme(next);
+    // Charts exist by now => safe palette update
+    updateChartPalettes();
+  });
+  applyTheme(getSavedTheme());
+
+  /* ---------- Nav / interactions ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click', e=>{
+      const id=a.getAttribute('href').slice(1);
+      const el=document.getElementById(id);
+      if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); closeMenu(); }
     });
-    applyTheme(getSavedTheme());
+  });
+  const ham=document.querySelector('.hamburger');
+  const menu=document.getElementById('mobileMenu');
+  function closeMenu(){ menu.style.display='none'; ham.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }
+  ham.addEventListener('click', ()=>{
+    const open = menu.style.display==='block';
+    if(open){ closeMenu(); } else { menu.style.display='block'; ham.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false'); }
+  });
+  document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && !ham.contains(e.target)) closeMenu(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
 
-    // ---------- Nav / interactions ----------
-    document.querySelectorAll('a[href^="#"]').forEach(a=>{
-      a.addEventListener('click', e=>{
-        const id=a.getAttribute('href').slice(1);
-        const el=document.getElementById(id);
-        if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); closeMenu(); }
+  // Subtle motion
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!prefersReduced){
+    document.querySelectorAll('.card, .kpi').forEach(el=>{
+      el.addEventListener('mousemove', (e)=>{
+        const r=el.getBoundingClientRect(), x=e.clientX - r.left, y=e.clientY - r.top;
+        const rx=(y/r.height - .5)*2, ry=(x/r.width - .5)*-2;
+        el.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
       });
+      el.addEventListener('mouseleave', ()=>{ el.style.transform='translateY(-2px)'; });
+      el.addEventListener('mouseenter', ()=>{ el.style.transition='transform .15s ease'; });
     });
-    const ham=document.querySelector('.hamburger');
-    const menu=document.getElementById('mobileMenu');
-    function closeMenu(){ menu.style.display='none'; ham.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }
-    ham.addEventListener('click', ()=>{
-      const open = menu.style.display==='block';
-      if(open){ closeMenu(); } else { menu.style.display='block'; ham.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false'); }
+  }
+
+  /* ---------- Data (illustrative for XYZ) ---------- */
+  const scenarios = {
+    xyz_saas: {
+      mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[16,12,10,12,12,18,20] },
+      roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[27,20,17,18,18] },
+      runway: { labels:['Base','TSCFO Plan'], values:[12,20] }
+    },
+    xyz_deep: {
+      mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[28,18,12,8,8,2,24] },
+      roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[24,18,22,14,22] },
+      runway: { labels:['Base','TSCFO Plan'], values:[12,22] }
+    },
+    xyz_mix: {
+      mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[18,14,10,10,14,14,20] },
+      roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[25,20,19,16,20] },
+      runway: { labels:['Base','TSCFO Plan'], values:[12,18] }
+    }
+  };
+
+  /* ---------- Chart palette by theme ---------- */
+  function palette(){
+    const theme = root.getAttribute('data-theme') || 'dark';
+    if(theme==='light'){
+      return { label:'#0b0e13', axis:'rgba(20,30,50,.75)', grid:'rgba(0,0,0,.08)', guide:'rgba(58,120,255,.85)' };
+    }
+    return { label:'#e9eefb', axis:'rgba(183,196,227,.7)', grid:'rgba(70,86,130,.25)', guide:'rgba(106,162,255,.9)' };
+  }
+
+  /* ---------- Custom plugins for Runway chart ---------- */
+  const runwayGuide = {
+    id:'runwayGuide',
+    afterDraw(chart, args, opts){
+      const {ctx, chartArea, scales} = chart;
+      if(!scales?.x) return;
+      const x = scales.x.getPixelForValue(opts.target ?? 18);
+      ctx.save();
+      ctx.setLineDash([6,6]);
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = opts.color;
+      ctx.beginPath();
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = opts.color;
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillText(`${opts.label ?? '18 mo target'}`, x + 6, chartArea.top + 12);
+      ctx.restore();
+    }
+  };
+  const valueLabels = {
+    id:'valueLabels',
+    afterDatasetsDraw(chart){
+      if(chart.canvas.id !== 'runwayChart') return;
+      const {ctx, chartArea} = chart;
+      ctx.save();
+      ctx.font = '12px Inter, system-ui, sans-serif';
+      ctx.fillStyle = palette().label;
+      const meta = chart.getDatasetMeta(0);
+      meta.data.forEach((bar, i)=>{
+        const val = chart.data.datasets[0].data[i];
+        const text = `${val} mo`;
+        const tw = ctx.measureText(text).width;
+        let x = bar.x + 8;
+        const y = bar.y + 4;
+        if(x + tw > chartArea.right - 4) x = bar.x - tw - 8;
+        ctx.fillText(text, x, y);
+      });
+      ctx.restore();
+    }
+  };
+  Chart.register(runwayGuide, valueLabels);
+
+  /* ---------- Charts ---------- */
+  const axisColor=()=>palette().axis, gridColor=()=>palette().grid, labelColor=()=>palette().label;
+
+  const ctxMix=document.getElementById('mixChart').getContext('2d');
+  const ctxRoi=document.getElementById('roiChart').getContext('2d');
+  const ctxRun=document.getElementById('runwayChart').getContext('2d');
+
+  function draw(kind='xyz_saas'){
+    const d = scenarios[kind];
+
+    if(mixChart) mixChart.destroy();
+    if(roiChart) roiChart.destroy();
+    if(runwayChart) runwayChart.destroy();
+
+    mixChart = new Chart(ctxMix, {
+      type:'bar',
+      data:{ labels:d.mix.labels, datasets:[{ label:'Funding Mix (%)', data:d.mix.values }] },
+      options:{
+        responsive:true, animation:{ duration:600 },
+        plugins:{ legend:{ labels:{ color:labelColor() } }, tooltip:{ enabled:true } },
+        scales:{ x:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() } },
+                 y:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() }, suggestedMax:35 } }
+      }
     });
-    document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && !ham.contains(e.target)) closeMenu(); });
-    document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
 
-    // Subtle motion on cards & KPIs
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!prefersReduced){
-      document.querySelectorAll('.card, .kpi').forEach(el=>{
-        el.addEventListener('mousemove', (e)=>{
-          const r=el.getBoundingClientRect(), x=e.clientX - r.left, y=e.clientY - r.top;
-          const rx=(y/r.height - .5)*2, ry=(x/r.width - .5)*-2;
-          el.style.transform=`rotateX(${rx}deg) rotateY(${ry}deg) translateY(-2px)`;
-        });
-        el.addEventListener('mouseleave', ()=>{ el.style.transform='translateY(-2px)'; });
-        el.addEventListener('mouseenter', ()=>{ el.style.transition='transform .15s ease'; });
-      });
-    }
-
-    // ---------- Data (illustrative for XYZ) ----------
-    const scenarios = {
-      xyz_saas: {
-        mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[16,12,10,12,12,18,20] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[27,20,17,18,18] },
-        runway: { labels:['Base','TSCFO Plan'], values:[12,20] }
-      },
-      xyz_deep: {
-        mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[28,18,12,8,8,2,24] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[24,18,22,14,22] },
-        runway: { labels:['Base','TSCFO Plan'], values:[12,22] }
-      },
-      xyz_mix: {
-        mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[18,14,10,10,14,14,20] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[25,20,19,16,20] },
-        runway: { labels:['Base','TSCFO Plan'], values:[12,18] }
+    roiChart = new Chart(ctxRoi, {
+      type:'doughnut',
+      data:{ labels:d.roi.labels, datasets:[{ label:'ROI Contribution', data:d.roi.values }] },
+      options:{
+        responsive:true, animation:{ duration:600 },
+        plugins:{ legend:{ labels:{ color:labelColor() } }, tooltip:{ enabled:true } },
+        cutout:'55%'
       }
-    };
+    });
 
-    // ---------- Chart palette by theme ----------
-    function palette(){
-      const theme = root.getAttribute('data-theme') || 'dark';
-      if(theme==='light'){
-        return {
-          label:'#0b0e13',
-          axis:'rgba(20,30,50,.75)',
-          grid:'rgba(0,0,0,.08)',
-          guide:'rgba(58,120,255,.85)'
-        };
-      }
-      return {
-        label:'#e9eefb',
-        axis:'rgba(183,196,227,.7)',
-        grid:'rgba(70,86,130,.25)',
-        guide:'rgba(106,162,255,.9)'
-      };
-    }
-
-    // ---------- Custom plugins for Runway chart ----------
-    // Target/guide line at 18 months
-    const runwayGuide = {
-      id:'runwayGuide',
-      afterDraw(chart, args, opts){
-        const {ctx, chartArea, scales} = chart;
-        if(!scales?.x) return;
-        const x = scales.x.getPixelForValue(opts.target ?? 18);
-        ctx.save();
-        ctx.setLineDash([6,6]);
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = opts.color;
-        ctx.beginPath();
-        ctx.moveTo(x, chartArea.top);
-        ctx.lineTo(x, chartArea.bottom);
-        ctx.stroke();
-        ctx.setLineDash([]);
-        ctx.fillStyle = opts.color;
-        ctx.font = '12px Inter, system-ui, sans-serif';
-        ctx.fillText(`${opts.label ?? '18 mo target'}`, x + 6, chartArea.top + 12);
-        ctx.restore();
-      }
-    };
-
-    // Value labels for bars
-    const valueLabels = {
-      id:'valueLabels',
-      afterDatasetsDraw(chart){
-        if(chart.canvas.id !== 'runwayChart') return;
-        const {ctx, chartArea} = chart;
-        ctx.save();
-        ctx.font = '12px Inter, system-ui, sans-serif';
-        ctx.fillStyle = palette().label;
-        const meta = chart.getDatasetMeta(0);
-        meta.data.forEach((bar, i)=>{
-          const val = chart.data.datasets[0].data[i];
-          const text = `${val} mo`;
-          const tw = ctx.measureText(text).width;
-          let x = bar.x + 8;
-          const y = bar.y + 4;
-          // prevent overflow on the right
-          if(x + tw > chartArea.right - 4) x = bar.x - tw - 8;
-          ctx.fillText(text, x, y);
-        });
-        ctx.restore();
-      }
-    };
-
-    Chart.register(runwayGuide, valueLabels);
-
-    // ---------- Charts ----------
-    const axisColor=()=>palette().axis, gridColor=()=>palette().grid, labelColor=()=>palette().label;
-
-    const ctxMix=document.getElementById('mixChart').getContext('2d');
-    const ctxRoi=document.getElementById('roiChart').getContext('2d');
-    const ctxRun=document.getElementById('runwayChart').getContext('2d');
-    let mixChart, roiChart, runwayChart;
-
-    function draw(kind='xyz_saas'){
-      const d = scenarios[kind];
-      if(mixChart) mixChart.destroy();
-      if(roiChart) roiChart.destroy();
-      if(runwayChart) runwayChart.destroy();
-
-      mixChart = new Chart(ctxMix, {
-        type:'bar',
-        data:{ labels:d.mix.labels, datasets:[{ label:'Funding Mix (%)', data:d.mix.values }] },
-        options:{
-          responsive:true, animation:{ duration:600 },
-          plugins:{ legend:{ labels:{ color:labelColor() } }, tooltip:{ enabled:true } },
-          scales:{ x:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() } },
-                   y:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() }, suggestedMax:35 } }
+    runwayChart = new Chart(ctxRun, {
+      type:'bar',
+      data:{ labels:d.runway.labels, datasets:[{ label:'Runway (months)', data:d.runway.values }] },
+      options:{
+        indexAxis:'y',
+        responsive:true, animation:{ duration:600 },
+        plugins:{
+          legend:{ labels:{ color:labelColor() } },
+          tooltip:{ enabled:true },
+          runwayGuide:{ target:18, color:palette().guide, label:'18 mo target' }
+        },
+        scales:{
+          y:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() } },
+          x:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() }, suggestedMax:24, beginAtZero:true }
         }
-      });
+      }
+    });
+  }
 
-      roiChart = new Chart(ctxRoi, {
-        type:'doughnut',
-        data:{ labels:d.roi.labels, datasets:[{ label:'ROI Contribution', data:d.roi.values }] },
-        options:{
-          responsive:true, animation:{ duration:600 },
-          plugins:{ legend:{ labels:{ color:labelColor() } }, tooltip:{ enabled:true } },
-          cutout:'55%'
-        }
-      });
+  /* ---------- Palette updater (safe) ---------- */
+  function updateChartPalettes(){
+    // Guard: if charts not ready, just return
+    if(!mixChart || !roiChart || !runwayChart) return;
+    const pal = palette();
 
-      // HORIZONTAL runway: indexAxis:'y'
-      runwayChart = new Chart(ctxRun, {
-        type:'bar',
-        data:{ labels:d.runway.labels, datasets:[{ label:'Runway (months)', data:d.runway.values }] },
-        options:{
-          indexAxis:'y',
-          responsive:true, animation:{ duration:600 },
-          plugins:{
-            legend:{ labels:{ color:labelColor() } },
-            tooltip:{ enabled:true },
-            runwayGuide:{ target:18, color:palette().guide, label:'18 mo target' }
-          },
-          scales:{
-            y:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() } },
-            x:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() }, suggestedMax:24, beginAtZero:true }
-          }
-        }
-      });
-    }
+    // Mix
+    mixChart.options.plugins.legend.labels.color = pal.label;
+    mixChart.options.scales.x.ticks.color = pal.axis;
+    mixChart.options.scales.x.grid.color  = pal.grid;
+    mixChart.options.scales.y.ticks.color = pal.axis;
+    mixChart.options.scales.y.grid.color  = pal.grid;
+    mixChart.update();
 
-    function updateChartPalettes(){
-      const pal = palette();
-      // Mix
-      mixChart.options.plugins.legend.labels.color = pal.label;
-      mixChart.options.scales.x.ticks.color = pal.axis;
-      mixChart.options.scales.x.grid.color = pal.grid;
-      mixChart.options.scales.y.ticks.color = pal.axis;
-      mixChart.options.scales.y.grid.color = pal.grid;
-      mixChart.update();
+    // ROI
+    roiChart.options.plugins.legend.labels.color = pal.label;
+    roiChart.update();
 
-      // ROI
-      roiChart.options.plugins.legend.labels.color = pal.label;
-      roiChart.update();
+    // Runway
+    runwayChart.options.plugins.legend.labels.color = pal.label;
+    runwayChart.options.plugins.runwayGuide.color = pal.guide;
+    runwayChart.options.scales.y.ticks.color = pal.axis;
+    runwayChart.options.scales.y.grid.color  = pal.grid;
+    runwayChart.options.scales.x.ticks.color = pal.axis;
+    runwayChart.options.scales.x.grid.color  = pal.grid;
+    runwayChart.update();
+  }
 
-      // Runway
-      runwayChart.options.plugins.legend.labels.color = pal.label;
-      runwayChart.options.plugins.runwayGuide.color = pal.guide;
-      runwayChart.options.scales.y.ticks.color = pal.axis;
-      runwayChart.options.scales.y.grid.color = pal.grid;
-      runwayChart.options.scales.x.ticks.color = pal.axis;
-      runwayChart.options.scales.x.grid.color = pal.grid;
-      runwayChart.update();
-    }
+  // Initial draw + palette sync
+  draw('xyz_saas');
+  updateChartPalettes();
 
-    draw('xyz_saas');
-    document.getElementById('dataset').addEventListener('change', e=> draw(e.target.value));
-  </script>
+  // Scenario switcher
+  document.getElementById('dataset').addEventListener('change', e=>{
+    draw(e.target.value);
+    updateChartPalettes();
+  });
+</script>
 </body>
 </html>
