@@ -1,80 +1,89 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>The Startup CFO | Competitor Financing & ROI Dashboard</title>
-<meta name="description" content="Dashboard showing how The Startup CFO can help competitor startups unlock blended financing and increase ROI. Minimalist, responsive, and ready for GitHub Pages." />
+<title>TSCFO → XYZ Tech Solutions | Financing & ROI Proposal</title>
+<meta name="description" content="Executive proposal from The Startup CFO for XYZ Tech Solutions: blended financing, ROI impact, dilution minimization, and execution roadmap." />
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- Favicon (inline SVG) -->
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="%236aa2ff"/><stop offset="1" stop-color="%237cf7d4"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(%23g)"/><path d="M16 32a16 16 0 1132 0M16 32h16v16" fill="none" stroke="white" stroke-width="6" stroke-linecap="round"/></svg>'/>
+
 <style>
   :root{
     --bg:#0b0e13; --surface:#0e131d; --card:#101827; --muted:#8da0c6; --text:#e9eefb;
-    --accent:#6aa2ff; --accent-2:#7cf7d4; --warn:#ffd36a; --ok:#79f2c0; --ring:0 0 0 2px rgba(106,162,255,.35);
-    --radius:16px; --shadow:0 20px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
+    --accent:#6aa2ff; --accent-2:#7cf7d4; --warn:#ffd36a; --ok:#79f2c0;
+    --ring:0 0 0 2px rgba(106,162,255,.35);
+    --radius:16px; --shadow:0 22px 42px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03);
   }
+  /* Light theme overrides */
+  [data-theme="light"]{
+    --bg:#f5f7fb; --surface:#f8faff; --card:#ffffff; --muted:#5b6e95; --text:#0b0e13;
+    --accent:#3a78ff; --accent-2:#18d6b3; --warn:#b07a00; --ok:#178f70;
+    --ring:0 0 0 2px rgba(58,120,255,.35);
+    --shadow:0 12px 28px rgba(9,14,19,.12), inset 0 1px 0 rgba(0,0,0,.04);
+  }
+
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;background:linear-gradient(180deg,#0a0d12,#0b0e13);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+  html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--surface),var(--bg));color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
   a{color:var(--accent);text-decoration:none}
   a:hover{text-decoration:underline}
   .wrap{max-width:1180px;margin:0 auto;padding:20px}
-  /* Header / Nav */
-  header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;position:sticky;top:0;background:linear-gradient(180deg,rgba(11,14,19,.95),rgba(11,14,19,.85));backdrop-filter:blur(8px);z-index:10}
+
+  header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 0;position:sticky;top:0;background:linear-gradient(180deg,rgba(11,14,19,.92),rgba(11,14,19,.82));backdrop-filter:blur(8px);z-index:10}
+  [data-theme="light"] header{background:linear-gradient(180deg,rgba(255,255,255,.9),rgba(255,255,255,.85))}
   .brand{display:flex;gap:12px;align-items:center}
   .logo{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 10px 30px rgba(106,162,255,.35)}
-  .logo svg{filter:drop-shadow(0 2px 10px rgba(0,0,0,.35))}
   .title h1{font-size:18px;margin:0}
   .title p{margin:2px 0 0;color:var(--muted);font-size:12px}
   nav{display:flex;gap:10px;align-items:center}
-  .nav-link{border:1px solid #1e2740;background:#0e1421;padding:10px 12px;border-radius:12px;color:var(--text);font-weight:600;font-size:13px;cursor:pointer;transition:transform .2s, box-shadow .2s}
+  .nav-link{border:1px solid #1e2740;background:#0e1421;padding:10px 12px;border-radius:12px;color:#e9eefb;font-weight:600;font-size:13px;cursor:pointer;transition:transform .2s, box-shadow .2s}
   .nav-link:hover{transform:translateY(-1px);box-shadow:var(--ring)}
-  /* Hamburger */
+  [data-theme="light"] .nav-link{background:#eef2ff;border-color:#d4dcff;color:#0b0e13}
+
   .hamburger{display:none;cursor:pointer;width:42px;height:42px;border-radius:12px;border:1px solid #1e2740;background:#0e1421;align-items:center;justify-content:center}
   .hamburger svg{pointer-events:none}
+  [data-theme="light"] .hamburger{background:#eef2ff;border-color:#d4dcff}
   .mobile-menu{display:none;position:absolute;top:64px;right:20px;background:var(--surface);border:1px solid #1b2744;border-radius:14px;box-shadow:var(--shadow);padding:8px;width:220px}
   .mobile-menu a{display:block;padding:10px 12px;border-radius:10px;color:var(--text)}
-  .mobile-menu a:hover{background:#0f1726}
-  @media(max-width:900px){
-    nav{display:none}
-    .hamburger{display:flex}
-  }
+  .mobile-menu a:hover{background:#0f1726;color:#e9eefb}
+  [data-theme="light"] .mobile-menu a:hover{background:#eef2ff;color:#0b0e13}
+  @media(max-width:900px){ nav{display:none} .hamburger{display:flex} }
 
-  /* Layout */
   .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:14px}
   .card{grid-column:span 12;background:linear-gradient(180deg,#0f1420,#111827);border:1px solid #1b2340;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);transform:translateZ(0);transition:transform .25s ease, box-shadow .25s ease}
+  [data-theme="light"] .card{background:#fff;border-color:#e6e9f6}
   .card:hover{transform:translateY(-2px)}
   @media(min-width:920px){ .span-4{grid-column:span 4} .span-6{grid-column:span 6} .span-8{grid-column:span 8}}
   .section-title{display:flex;align-items:center;gap:10px;margin:0 0 8px}
   .section-title svg{opacity:.9}
   .note{font-size:13px;color:var(--muted)}
-  /* KPI */
   .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
   @media(max-width:920px){.kpis{grid-template-columns:repeat(2,1fr)}}
   .kpi{background:linear-gradient(180deg,#101a2a,#0e1524);border:1px solid #1c2642;border-radius:14px;padding:14px;transition:transform .25s ease, box-shadow .25s ease}
+  [data-theme="light"] .kpi{background:#f8faff;border-color:#e6e9f6}
   .kpi h3{margin:0 0 2px;font-size:12px;color:var(--muted);font-weight:600}
   .kpi .val{font-size:22px;font-weight:700;margin:0 0 6px}
   .kpi .trend{font-size:12px;color:#9bd7c9}
-  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #203057;background:#0b1220;padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
-  .list{display:grid;gap:10px}
-  .list-item{display:flex;gap:10px;padding:12px;border-radius:12px;background:#0f1726;border:1px solid #1d2946;transition:transform .25s ease, box-shadow .25s ease}
-  .list-item:hover{transform:translateY(-2px)}
-  .badge{font-size:11px;padding:3px 7px;border-radius:7px;border:1px solid #2a3b66;background:#0d1423;color:#b7c4e3}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
-  .chip{font-size:11px;padding:5px 8px;border-radius:10px;background:#0e1524;border:1px solid #223059}
-  .matrix{width:100%;border-collapse:separate;border-spacing:0 8px}
-  .matrix tr td{background:#0f1626;border:1px solid #1f2c50;padding:10px;border-radius:10px}
-  .legend{display:flex;gap:8px;align-items:center}
-  .legend span{font-size:12px;color:var(--muted)}
-  .tag-ok{color:var(--ok)} .tag-risk{color:var(--warn)} .tag-no{color:#ff9b9b}
-  .select{appearance:none;background:#0e1421;border:1px solid #1e2740;border-radius:12px;color:var(--text);padding:10px 12px;font-weight:600}
+  [data-theme="light"] .kpi .trend{color:#178f70}
   .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .footer{margin:24px 0 8px;color:var(--muted);font-size:12px;text-align:center}
-  /* Accessibility: motion */
-  @media (prefers-reduced-motion: reduce){
-    *{transition:none !important; animation:none !important}
-  }
-  /* Focus styles */
+  .pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #203057;background:#0b1220;padding:6px 10px;border-radius:999px;font-size:12px;color:var(--muted)}
+  [data-theme="light"] .pill{background:#eef2ff;border-color:#d4dcff;color:#5b6e95}
+  ol{margin:8px 0 0 18px}
+  .footer{margin:26px 0 10px;color:var(--muted);font-size:12px;text-align:center}
+
+  .btn{display:inline-flex;align-items:center;gap:10px;border:1px solid #1e2740;background:#0e1421;padding:12px 14px;border-radius:12px;color:#e9eefb;font-weight:700;cursor:pointer;transition:transform .2s, box-shadow .2s}
+  .btn:hover{transform:translateY(-1px);box-shadow:var(--ring)}
+  [data-theme="light"] .btn{background:#eef2ff;border-color:#d4dcff;color:#0b0e13}
+
+  .theme-toggle{display:inline-flex;align-items:center;gap:8px;margin-left:8px}
+  .theme-toggle button{border:1px solid #1e2740;background:#0e1421;color:#e9eefb;border-radius:12px;padding:8px 10px;font-weight:700;cursor:pointer}
+  [data-theme="light"] .theme-toggle button{background:#eef2ff;border-color:#d4dcff;color:#0b0e13}
+
+  /* Motion accessibility */
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important} }
   :focus-visible{outline:none; box-shadow:var(--ring)}
 </style>
 </head>
@@ -83,7 +92,7 @@
     <header>
       <div class="brand">
         <button class="hamburger" aria-label="Open menu" aria-controls="mobileMenu" aria-expanded="false">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="#e9eefb" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </button>
         <div class="logo" aria-hidden="true">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -92,231 +101,179 @@
           </svg>
         </div>
         <div class="title">
-          <h1>The Startup CFO — Competitor Financing & ROI</h1>
-          <p>Blended finance · FP&A · Controlling · Tax/Legal · Non-dilutive + Alt + Equity</p>
+          <h1>TSCFO → XYZ Tech Solutions</h1>
+          <p>Blended financing · ROI & dilution optimization · Execution roadmap</p>
         </div>
       </div>
       <nav aria-label="Primary">
-        <a class="nav-link" href="#overview">Overview</a>
-        <a class="nav-link" href="#opps">Opportunities</a>
-        <a class="nav-link" href="#matrix">Fit Matrix</a>
-        <a class="nav-link" href="#charts">Charts</a>
+        <a class="nav-link" href="#hero">Intro</a>
+        <a class="nav-link" href="#overview">Executive Summary</a>
+        <a class="nav-link" href="#value">Value Roadmap</a>
+        <a class="nav-link" href="#charts">Dashboards</a>
         <a class="nav-link" href="#actions">Next Steps</a>
       </nav>
+      <div class="theme-toggle">
+        <button id="toggleTheme" aria-pressed="false" aria-label="Toggle light/dark theme">🌙 / ☀️</button>
+      </div>
       <div id="mobileMenu" class="mobile-menu" role="menu" aria-hidden="true">
-        <a href="#overview" role="menuitem">Overview</a>
-        <a href="#opps" role="menuitem">Opportunities</a>
-        <a href="#matrix" role="menuitem">Fit Matrix</a>
-        <a href="#charts" role="menuitem">Charts</a>
+        <a href="#hero" role="menuitem">Intro</a>
+        <a href="#overview" role="menuitem">Executive Summary</a>
+        <a href="#value" role="menuitem">Value Roadmap</a>
+        <a href="#charts" role="menuitem">Dashboards</a>
         <a href="#actions" role="menuitem">Next Steps</a>
       </div>
     </header>
 
-    <!-- OVERVIEW -->
-    <section id="overview" class="card" tabindex="0">
+    <!-- HERO -->
+    <section id="hero" class="card" tabindex="0" style="display:grid;gap:10px">
       <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 12h18M3 6h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-        <h2 style="margin:0">Executive Overview</h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12h16M4 6h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h2 style="margin:0">Opportunity to Partner</h2>
       </div>
       <p class="note">
-        How The Startup CFO can help competitor startups unlock more financing and increase ROI through a disciplined blend of
-        <strong>EU grants (EIC)</strong>, <strong>Spanish public funding (CDTI/NEOTEC, ENISA)</strong>, <strong>bank/alternative instruments</strong>
-        (credit lines, confirming, <strong>RBF</strong>), and <strong>private rounds</strong>—while strengthening FP&A, controlling, tax and legal.
+        XYZ Tech Solutions is preparing a <strong>€20M Series A</strong> while managing variable revenues and long sales cycles.
+        The Startup CFO (TSCFO) proposes a <strong>blended financing strategy</strong> that minimizes dilution and extends runway,
+        paired with disciplined FP&A and controlling to unlock higher ROI from the capital raised.
       </p>
-      <div class="kpis" style="margin-top:12px">
-        <div class="kpi" tabindex="0">
-          <h3>Potential non-dilutive per target</h3>
-          <p class="val">€0.25–2.5M</p>
-          <p class="trend">NEOTEC (€250–325k) + EIC grant (up to €2.5M)</p>
-        </div>
-        <div class="kpi" tabindex="0">
-          <h3>Blended equity capacity</h3>
-          <p class="val">€0.5–10M</p>
-          <p class="trend">EIC equity + private (STEP up to €30M)</p>
-        </div>
-        <div class="kpi" tabindex="0">
-          <h3>Working-capital runway</h3>
-          <p class="val">6–12 mo</p>
-          <p class="trend">RBF + credit lines for CAC/GMV cycles</p>
-        </div>
-        <div class="kpi" tabindex="0">
-          <h3>Key ROI levers</h3>
-          <p class="val">5</p>
-          <p class="trend">FP&A · Cost control · Tax · Pricing · WC</p>
-        </div>
+      <div class="row">
+        <a class="btn" href="#charts">View Dashboards</a>
+        <a class="btn" href="#actions">See Execution Plan</a>
       </div>
     </section>
 
-    <!-- OPPORTUNITIES -->
-    <section id="opps" class="card span-8" tabindex="0">
+    <!-- EXECUTIVE SUMMARY -->
+    <section id="overview" class="card" tabindex="0">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h2 style="margin:0">Executive Summary</h2>
+      </div>
+      <div class="kpis" style="margin-top:12px">
+        <div class="kpi" tabindex="0">
+          <h3>Non-dilutive potential</h3>
+          <p class="val">€0.5–3.0M</p>
+          <p class="trend">Stack grants (NEOTEC/EIC) + tax incentives</p>
+        </div>
+        <div class="kpi" tabindex="0">
+          <h3>Dilution saved</h3>
+          <p class="val">8–15 pp</p>
+          <p class="trend">Grant/credit before equity round</p>
+        </div>
+        <div class="kpi" tabindex="0">
+          <h3>Runway extension</h3>
+          <p class="val">+6–12 mo</p>
+          <p class="trend">RBF + bank lines smooth cash cycles</p>
+        </div>
+        <div class="kpi" tabindex="0">
+          <h3>ROI uplift</h3>
+          <p class="val">+18–35%</p>
+          <p class="trend">FP&A, cost control, pricing, WC</p>
+        </div>
+      </div>
+      <p class="note" style="margin-top:10px">
+        Figures are illustrative for planning and discussion—final values depend on eligibility, traction, and timing.
+      </p>
+    </section>
+
+    <!-- VALUE ROADMAP -->
+    <section id="value" class="card" tabindex="0">
+      <div class="section-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 18l6-12 6 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h2 style="margin:0">Value Roadmap (TSCFO → XYZ)</h2>
+      </div>
+      <ol>
+        <li><strong>Diagnostic (2 weeks)</strong> — FP&A, controlling, tax/legal, funding readiness. Define KPI set & cash model.</li>
+        <li><strong>Blended financing design</strong> — Sequence grants (NEOTEC/EIC), ENISA/public, bank/alt credit, RBF; then equity.</li>
+        <li><strong>Execution</strong> — Grant packs, investor materials, bank/RBF negotiation, KPI dashboards & reporting cadence.</li>
+        <li><strong>Scale discipline</strong> — Rolling cashflow, pricing/margin analytics, board reporting, incentive plans.</li>
+      </ol>
+      <div class="row" style="margin-top:10px">
+        <span class="pill">Deliverables: Financial model · Runway plan · Grant dossiers · Investor deck · Reporting suite</span>
+      </div>
+    </section>
+
+    <!-- DASHBOARDS -->
+    <section id="charts" class="card" tabindex="0">
       <div class="row" style="justify-content:space-between">
         <div class="section-title">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          <h2 style="margin:0">Opportunity Playbooks</h2>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 18V6M10 18V10M16 18V4M22 20H2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <h2 style="margin:0">Dashboards — Financing & ROI</h2>
         </div>
-        <div class="row" role="group" aria-label="Dataset selector">
+        <!-- Scenario selector here -->
+        <div class="row" role="group" aria-label="Scenario">
           <label class="note" for="dataset">Scenario:</label>
-          <select id="dataset" class="select" aria-controls="mixChart roiChart">
-            <option value="saas">SaaS (PLG/B2B)</option>
-            <option value="deeptech">Deeptech (AI/Industry 4.0)</option>
-            <option value="cyber">Cybersecurity</option>
-            <option value="marketplace">Marketplace</option>
-            <option value="health">Healthtech</option>
+          <select id="dataset" class="btn" style="padding:10px 12px;border-radius:12px">
+            <option value="xyz_saas">XYZ — SaaS Enterprise</option>
+            <option value="xyz_deep">XYZ — Deep Analytics</option>
+            <option value="xyz_mix">XYZ — Hybrid GTM</option>
           </select>
         </div>
       </div>
-      <div class="list" style="margin-top:8px">
-        <div class="list-item" tabindex="0">
-          <div style="min-width:28px;display:grid;place-items:center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>SaaS (PLG / B2B)</strong><span class="badge">High ROI</span>
-            </div>
-            <div class="chips">
-              <span class="chip">RBF for CAC smoothing</span><span class="chip">Vendor financing</span><span class="chip">ENISA growth</span><span class="chip">EIC (breakthrough)</span>
-            </div>
-            <p class="note">Accelerate ARR collection with RBF and flexible payment terms; layer ENISA and selective grant routes; FP&A + pricing uplift LTV/CAC.</p>
-          </div>
-        </div>
-        <div class="list-item" tabindex="0">
-          <div style="min-width:28px;display:grid;place-items:center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2l4 8h-8l4-8zM4 22h16" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>Deeptech (AI / HW–SW)</strong><span class="badge">Grant heavy</span>
-            </div>
-            <div class="chips">
-              <span class="chip">EIC Accelerator</span><span class="chip">CDTI/NEOTEC</span><span class="chip">IP + Tax</span>
-            </div>
-            <p class="note">Maximize non-dilutive stack (NEOTEC early, EIC later); strong IP and TRL roadmap; equity staged to minimize dilution.</p>
-          </div>
-        </div>
-        <div class="list-item" tabindex="0">
-          <div style="min-width:28px;display:grid;place-items:center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="white" stroke-width="2"/><path d="M8 12l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>Cybersecurity</strong><span class="badge">Balanced blend</span>
-            </div>
-            <div class="chips">
-              <span class="chip">EIC (breakthrough)</span><span class="chip">Bank credit lines</span><span class="chip">Private</span>
-            </div>
-            <p class="note">Blend EIC with credit lines to bridge enterprise sales cycles; strict controlling for multi-year contracts; legal on privacy & certs.</p>
-          </div>
-        </div>
-        <div class="list-item" tabindex="0">
-          <div style="min-width:28px;display:grid;place-items:center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M3 10h18M6 10v10m12-10v10M9 20h6" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>Marketplaces</strong><span class="badge">Working-capital</span>
-            </div>
-            <div class="chips">
-              <span class="chip">RBF for liquidity</span><span class="chip">Confirming</span><span class="chip">ENISA growth</span>
-            </div>
-            <p class="note">Use RBF/confirming for inventory & suppliers; optimize take-rate and unit economics; tax credits when applicable.</p>
-          </div>
-        </div>
-        <div class="list-item" tabindex="0">
-          <div style="min-width:28px;display:grid;place-items:center">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-          </div>
-          <div>
-            <div style="display:flex;align-items:center;gap:8px">
-              <strong>Healthtech</strong><span class="badge">Regulatory</span>
-            </div>
-            <div class="chips">
-              <span class="chip">EIC/NEOTEC</span><span class="chip">Equity for trials</span><span class="chip">Legal/Privacy</span>
-            </div>
-            <p class="note">Grant-first to de-risk clinical/regulatory; equity for GTM; rigorous privacy & compliance stack.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- SIDEBAR QUICK LINKS -->
-    <aside class="card span-4" tabindex="0" aria-label="Quick Links">
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M5 6h14M5 18h14" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-        <h2 style="margin:0">Quick Links</h2>
-      </div>
-      <div class="list">
-        <div class="list-item"><div class="badge">EU</div><div><a href="#" onclick="alert('Open EIC Accelerator page in live pitch.');return false;">EIC Accelerator</a><p class="note">Grant up to €2.5M + equity (€0.5–10M)</p></div></div>
-        <div class="list-item"><div class="badge">ES</div><div><a href="#" onclick="alert('Open CDTI NEOTEC page in live pitch.');return false;">CDTI · NEOTEC</a><p class="note">Tech-based firms; early funding</p></div></div>
-        <div class="list-item"><div class="badge">ALT</div><div><a href="#" onclick="alert('Open RBF providers in live pitch.');return false;">RBF (Capchase / Ritmo)</a><p class="note">Non-dilutive working-capital</p></div></div>
-      </div>
-      <p class="note" style="margin-top:8px">Links can be pointed to real pages later; kept inert here for GitHub Pages demos.</p>
-    </aside>
-
-    <!-- FIT MATRIX -->
-    <section id="matrix" class="card" tabindex="0">
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="white" stroke-width="2" stroke-linejoin="round"/></svg>
-        <h2 style="margin:0">Funding Fit Matrix</h2>
-      </div>
-      <div class="legend">
-        <span class="tag-ok">● good fit</span><span class="tag-risk">● conditional</span><span class="tag-no">● weak fit</span>
-      </div>
-      <table class="matrix" style="margin-top:10px">
-        <tr><td><strong>EIC Accelerator</strong></td><td>Deep-tech, TRL 6–9 <span class="tag-ok">●</span></td><td>Health/Cyber <span class="tag-ok">●</span></td><td>SaaS (breakthrough) <span class="tag-risk">●</span></td><td>Marketplace <span class="tag-risk">●</span></td></tr>
-        <tr><td><strong>CDTI · NEOTEC</strong></td><td>Tech-based early <span class="tag-ok">●</span></td><td>Women/PhD bonus <span class="tag-ok">●</span></td><td>SaaS <span class="tag-ok">●</span></td><td>Marketplace <span class="tag-ok">●</span></td></tr>
-        <tr><td><strong>ENISA / Public</strong></td><td>Scale in ES <span class="tag-ok">●</span></td><td>Capex-light <span class="tag-ok">●</span></td><td>Recurring rev. <span class="tag-ok">●</span></td><td>Unit econ. proof <span class="tag-ok">●</span></td></tr>
-        <tr><td><strong>Bank / Alt (Credit)</strong></td><td>Post-revenue <span class="tag-ok">●</span></td><td>Enterprise cycles <span class="tag-ok">●</span></td><td>Low churn <span class="tag-ok">●</span></td><td>Inventory cycles <span class="tag-ok">●</span></td></tr>
-        <tr><td><strong>RBF (Capchase/Ritmo)</strong></td><td>Usage-based <span class="tag-ok">●</span></td><td>Predictable MRR <span class="tag-ok">●</span></td><td>High CAC upfront <span class="tag-ok">●</span></td><td>GMV cycles <span class="tag-ok">●</span></td></tr>
-        <tr><td><strong>Private (VC)</strong></td><td>Category creation <span class="tag-ok">●</span></td><td>Moats/IP <span class="tag-ok">●</span></td><td>PLG scale <span class="tag-ok">●</span></td><td>Network effects <span class="tag-ok">●</span></td></tr>
-      </table>
-      <p class="note" style="margin-top:8px">Sequence: grant → ENISA/credit/RBF → equity. Raise more with less dilution.</p>
-    </section>
-
-    <!-- CHARTS -->
-    <section id="charts" class="card" tabindex="0">
-      <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 18V6M10 18V10M16 18V4M22 20H2" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-        <h2 style="margin:0">Blended Financing & ROI (interactive)</h2>
-      </div>
-      <div class="row" style="margin-bottom:10px">
-        <span class="pill">Hover any chart or card for subtle motion ✨</span>
-      </div>
-      <div class="row" style="align-items:stretch">
+      <div class="row" style="align-items:stretch;margin-top:10px">
         <div style="flex:1;min-width:260px">
           <canvas id="mixChart" height="190" aria-label="Funding Mix"></canvas>
+          <p class="note">Funding Mix (%): composition designed to minimize dilution while maintaining speed.</p>
         </div>
         <div style="flex:1;min-width:260px">
           <canvas id="roiChart" height="190" aria-label="ROI Levers"></canvas>
+          <p class="note">ROI Levers: relative contribution to profit uplift within 12–18 months.</p>
         </div>
       </div>
-      <p class="note" style="margin-top:10px">Switch scenarios from the selector above. Data below is plausible and illustrative (not real).</p>
+
+      <div class="row" style="align-items:stretch;margin-top:10px">
+        <div style="flex:1;min-width:260px">
+          <canvas id="runwayChart" height="220" aria-label="Runway Extension (Horizontal)"></canvas>
+          <p class="note">Runway (months): base vs. TSCFO blended plan. Target line at 18 months for healthy fundraising cycles.</p>
+        </div>
+      </div>
     </section>
 
-    <!-- ACTIONS -->
+    <!-- NEXT STEPS -->
     <section id="actions" class="card" tabindex="0">
       <div class="section-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 18l6-12 6 12" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
-        <h2 style="margin:0">Next Steps — Driving ROI</h2>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M5 6h14M5 18h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <h2 style="margin:0">Next Steps</h2>
       </div>
-      <ol style="margin:8px 0 0 18px">
-        <li><strong>Diagnostic</strong> — FP&A, controlling, tax/legal readiness (2 wks).</li>
-        <li><strong>Blended finance plan</strong> — EIC/NEOTEC/ENISA + credit/RBF + equity.</li>
-        <li><strong>Execution</strong> — grant packs, investor deck, term negotiation, KPI suite.</li>
-        <li><strong>Scale discipline</strong> — rolling cashflow, pricing, board reporting, incentives.</li>
+      <ol>
+        <li>Workshop (60–90 min): confirm objectives, eligibility, and timing; align on KPIs and investor narrative.</li>
+        <li>Kick-off (Week 1): finalize cash model; submit first public funding dossier; open bank/RBF dialogues.</li>
+        <li>Weeks 2–6: deliver grant packs & investor materials; negotiate terms; implement reporting cadence.</li>
+        <li>Board pack (end of month 2): funding pipeline status, runway impact, ROI plan, and governance cadence.</li>
       </ol>
-      <div class="chips" style="margin-top:10px">
-        <span class="pill">Deliverables: Model · Runway · Deck · Grants · Reporting</span>
+      <div class="row">
+        <a class="btn" href="#hero">Back to Top</a>
       </div>
     </section>
 
-    <div class="footer">© The Startup CFO — AE dashboard. Minimalist build for GitHub Pages. Update content as needed.</div>
+    <div class="footer">
+      © The Startup CFO — Proposal for XYZ Tech Solutions. · Reference links available on request: EIC Accelerator · CDTI/NEOTEC · ENISA · RBF providers (Capchase / Ritmo).
+    </div>
   </div>
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js" crossorigin="anonymous"></script>
   <script>
-    // Smooth scroll for internal links
+    // ---------- Theme handling ----------
+    const root = document.documentElement;
+    const themeBtn = document.getElementById('toggleTheme');
+    function getSavedTheme(){
+      return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+    }
+    function applyTheme(theme){
+      root.setAttribute('data-theme', theme);
+      themeBtn.setAttribute('aria-pressed', theme==='light');
+      themeBtn.textContent = theme==='light' ? '☀️ Light' : '🌙 Dark';
+      // Update chart palettes if charts exist
+      if(window.mixChart) updateChartPalettes();
+    }
+    themeBtn.addEventListener('click', ()=>{
+      const next = root.getAttribute('data-theme')==='light' ? 'dark' : 'light';
+      localStorage.setItem('theme', next);
+      applyTheme(next);
+    });
+    applyTheme(getSavedTheme());
+
+    // ---------- Nav / interactions ----------
     document.querySelectorAll('a[href^="#"]').forEach(a=>{
       a.addEventListener('click', e=>{
         const id=a.getAttribute('href').slice(1);
@@ -324,31 +281,20 @@
         if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth'}); closeMenu(); }
       });
     });
-
-    // Hamburger menu
     const ham=document.querySelector('.hamburger');
     const menu=document.getElementById('mobileMenu');
-    function closeMenu(){
-      menu.style.display='none';
-      ham.setAttribute('aria-expanded','false');
-      menu.setAttribute('aria-hidden','true');
-    }
+    function closeMenu(){ menu.style.display='none'; ham.setAttribute('aria-expanded','false'); menu.setAttribute('aria-hidden','true'); }
     ham.addEventListener('click', ()=>{
       const open = menu.style.display==='block';
-      if(open){ closeMenu(); } else {
-        menu.style.display='block';
-        ham.setAttribute('aria-expanded','true');
-        menu.setAttribute('aria-hidden','false');
-      }
+      if(open){ closeMenu(); } else { menu.style.display='block'; ham.setAttribute('aria-expanded','true'); menu.setAttribute('aria-hidden','false'); }
     });
-    // Close on outside click / ESC
     document.addEventListener('click', (e)=>{ if(!menu.contains(e.target) && !ham.contains(e.target)) closeMenu(); });
     document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') closeMenu(); });
 
-    // Subtle mouse parallax for cards (disabled if user prefers reduced motion)
+    // Subtle motion on cards & KPIs
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(!prefersReduced){
-      document.querySelectorAll('.card, .kpi, .list-item').forEach(el=>{
+      document.querySelectorAll('.card, .kpi').forEach(el=>{
         el.addEventListener('mousemove', (e)=>{
           const r=el.getBoundingClientRect(), x=e.clientX - r.left, y=e.clientY - r.top;
           const rx=(y/r.height - .5)*2, ry=(x/r.width - .5)*-2;
@@ -359,53 +305,116 @@
       });
     }
 
-    // DATASETS (plausible, illustrative)
-    const datasets = {
-      saas: {
-        mix: { labels:['EIC Grant','EIC Equity','CDTI/NEOTEC','ENISA/Public','Bank/Alt','RBF','Private VC'], values:[18,12,8,12,10,20,20] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[26,21,17,19,17] }
+    // ---------- Data (illustrative for XYZ) ----------
+    const scenarios = {
+      xyz_saas: {
+        mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[16,12,10,12,12,18,20] },
+        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[27,20,17,18,18] },
+        runway: { labels:['Base','TSCFO Plan'], values:[12,20] }
       },
-      deeptech: {
-        mix: { labels:['EIC Grant','EIC Equity','CDTI/NEOTEC','ENISA/Public','Bank/Alt','RBF','Private VC'], values:[30,18,12,10,8,2,20] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[24,18,22,16,20] }
+      xyz_deep: {
+        mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[28,18,12,8,8,2,24] },
+        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[24,18,22,14,22] },
+        runway: { labels:['Base','TSCFO Plan'], values:[12,22] }
       },
-      cyber: {
-        mix: { labels:['EIC Grant','EIC Equity','CDTI/NEOTEC','ENISA/Public','Bank/Alt','RBF','Private VC'], values:[20,14,8,10,16,8,24] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[25,22,16,17,20] }
-      },
-      marketplace: {
-        mix: { labels:['EIC Grant','EIC Equity','CDTI/NEOTEC','ENISA/Public','Bank/Alt','RBF','Private VC'], values:[8,6,10,12,18,26,20] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[22,20,14,18,26] }
-      },
-      health: {
-        mix: { labels:['EIC Grant','EIC Equity','CDTI/NEOTEC','ENISA/Public','Bank/Alt','RBF','Private VC'], values:[26,16,10,10,8,4,26] },
-        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[23,19,21,15,22] }
+      xyz_mix: {
+        mix: { labels:['EIC Grant','EIC Equity','NEOTEC/CDTI','ENISA/Public','Bank/Alt Credit','RBF','Private VC'], values:[18,14,10,10,14,14,20] },
+        roi: { labels:['FP&A/Forecast','Cost Control','Tax & Incentives','Pricing/Packaging','Working Capital'], values:[25,20,19,16,20] },
+        runway: { labels:['Base','TSCFO Plan'], values:[12,18] }
       }
     };
 
-    // CHARTS INIT
-    const axisColor='rgba(183,196,227,.6)', gridColor='rgba(70,86,130,.25)', labelColor='#e9eefb';
+    // ---------- Chart palette by theme ----------
+    function palette(){
+      const theme = root.getAttribute('data-theme') || 'dark';
+      if(theme==='light'){
+        return {
+          label:'#0b0e13',
+          axis:'rgba(20,30,50,.75)',
+          grid:'rgba(0,0,0,.08)',
+          guide:'rgba(58,120,255,.85)'
+        };
+      }
+      return {
+        label:'#e9eefb',
+        axis:'rgba(183,196,227,.7)',
+        grid:'rgba(70,86,130,.25)',
+        guide:'rgba(106,162,255,.9)'
+      };
+    }
+
+    // ---------- Custom plugins for Runway chart ----------
+    // Target/guide line at 18 months
+    const runwayGuide = {
+      id:'runwayGuide',
+      afterDraw(chart, args, opts){
+        const {ctx, chartArea, scales} = chart;
+        if(!scales?.x) return;
+        const x = scales.x.getPixelForValue(opts.target ?? 18);
+        ctx.save();
+        ctx.setLineDash([6,6]);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = opts.color;
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = opts.color;
+        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.fillText(`${opts.label ?? '18 mo target'}`, x + 6, chartArea.top + 12);
+        ctx.restore();
+      }
+    };
+
+    // Value labels for bars
+    const valueLabels = {
+      id:'valueLabels',
+      afterDatasetsDraw(chart){
+        if(chart.canvas.id !== 'runwayChart') return;
+        const {ctx, chartArea} = chart;
+        ctx.save();
+        ctx.font = '12px Inter, system-ui, sans-serif';
+        ctx.fillStyle = palette().label;
+        const meta = chart.getDatasetMeta(0);
+        meta.data.forEach((bar, i)=>{
+          const val = chart.data.datasets[0].data[i];
+          const text = `${val} mo`;
+          const tw = ctx.measureText(text).width;
+          let x = bar.x + 8;
+          const y = bar.y + 4;
+          // prevent overflow on the right
+          if(x + tw > chartArea.right - 4) x = bar.x - tw - 8;
+          ctx.fillText(text, x, y);
+        });
+        ctx.restore();
+      }
+    };
+
+    Chart.register(runwayGuide, valueLabels);
+
+    // ---------- Charts ----------
+    const axisColor=()=>palette().axis, gridColor=()=>palette().grid, labelColor=()=>palette().label;
+
     const ctxMix=document.getElementById('mixChart').getContext('2d');
     const ctxRoi=document.getElementById('roiChart').getContext('2d');
+    const ctxRun=document.getElementById('runwayChart').getContext('2d');
+    let mixChart, roiChart, runwayChart;
 
-    // Create charts
-    let mixChart, roiChart;
-    function createCharts(kind='saas'){
-      const d=datasets[kind];
+    function draw(kind='xyz_saas'){
+      const d = scenarios[kind];
       if(mixChart) mixChart.destroy();
       if(roiChart) roiChart.destroy();
+      if(runwayChart) runwayChart.destroy();
 
       mixChart = new Chart(ctxMix, {
         type:'bar',
         data:{ labels:d.mix.labels, datasets:[{ label:'Funding Mix (%)', data:d.mix.values }] },
         options:{
-          responsive:true,
-          animation:{ duration:600 },
-          plugins:{ legend:{ labels:{ color:labelColor } }, tooltip:{ enabled:true } },
-          scales:{
-            x:{ ticks:{ color:axisColor }, grid:{ color:gridColor } },
-            y:{ ticks:{ color:axisColor }, grid:{ color:gridColor }, suggestedMax:35 }
-          }
+          responsive:true, animation:{ duration:600 },
+          plugins:{ legend:{ labels:{ color:labelColor() } }, tooltip:{ enabled:true } },
+          scales:{ x:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() } },
+                   y:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() }, suggestedMax:35 } }
         }
       });
 
@@ -413,18 +422,58 @@
         type:'doughnut',
         data:{ labels:d.roi.labels, datasets:[{ label:'ROI Contribution', data:d.roi.values }] },
         options:{
-          responsive:true,
-          animation:{ duration:600 },
-          plugins:{ legend:{ labels:{ color:labelColor } }, tooltip:{ enabled:true } },
+          responsive:true, animation:{ duration:600 },
+          plugins:{ legend:{ labels:{ color:labelColor() } }, tooltip:{ enabled:true } },
           cutout:'55%'
         }
       });
-    }
-    createCharts('saas');
 
-    // Dataset switcher
-    const select=document.getElementById('dataset');
-    select.addEventListener('change', e=> createCharts(e.target.value));
+      // HORIZONTAL runway: indexAxis:'y'
+      runwayChart = new Chart(ctxRun, {
+        type:'bar',
+        data:{ labels:d.runway.labels, datasets:[{ label:'Runway (months)', data:d.runway.values }] },
+        options:{
+          indexAxis:'y',
+          responsive:true, animation:{ duration:600 },
+          plugins:{
+            legend:{ labels:{ color:labelColor() } },
+            tooltip:{ enabled:true },
+            runwayGuide:{ target:18, color:palette().guide, label:'18 mo target' }
+          },
+          scales:{
+            y:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() } },
+            x:{ ticks:{ color:axisColor() }, grid:{ color:gridColor() }, suggestedMax:24, beginAtZero:true }
+          }
+        }
+      });
+    }
+
+    function updateChartPalettes(){
+      const pal = palette();
+      // Mix
+      mixChart.options.plugins.legend.labels.color = pal.label;
+      mixChart.options.scales.x.ticks.color = pal.axis;
+      mixChart.options.scales.x.grid.color = pal.grid;
+      mixChart.options.scales.y.ticks.color = pal.axis;
+      mixChart.options.scales.y.grid.color = pal.grid;
+      mixChart.update();
+
+      // ROI
+      roiChart.options.plugins.legend.labels.color = pal.label;
+      roiChart.update();
+
+      // Runway
+      runwayChart.options.plugins.legend.labels.color = pal.label;
+      runwayChart.options.plugins.runwayGuide.color = pal.guide;
+      runwayChart.options.scales.y.ticks.color = pal.axis;
+      runwayChart.options.scales.y.grid.color = pal.grid;
+      runwayChart.options.scales.x.ticks.color = pal.axis;
+      runwayChart.options.scales.x.grid.color = pal.grid;
+      runwayChart.update();
+    }
+
+    draw('xyz_saas');
+    document.getElementById('dataset').addEventListener('change', e=> draw(e.target.value));
   </script>
 </body>
 </html>
